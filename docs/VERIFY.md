@@ -9,16 +9,18 @@ Tick a box only after seeing the behaviour in Forms Builder or at runtime.
 - [ ] Unverified: the Record Group `RG_EMP` accepts the bind variable
       `:EMP_BLK.DEPT_LIST` inside its query, and the query is re-evaluated with the
       item's current value every time the LOV opens.
+- [ ] Unverified: with `Automatic Refresh` set on `LOV_EMP`, the LOV really re-runs
+      the query on each open. If the rows do not change, this property is the first
+      suspect.
 
   How to check: build the LOV, change the list value, open the LOV, and compare the
   rows with `SELECT emp_name FROM employees WHERE dept_id = <value>;` run in
-  SQL*Plus. Also compile the Record Group and see whether the bind is accepted at
-  all (some Forms versions complain about item binds in a Record Group of type
-  Query).
+  SQL*Plus. Compile the Record Group as well: that tells you whether the bind is
+  accepted there.
 
-  If it fails: create three Record Groups (one per department) or a single Record
-  Group without the bind, and change `RG_EMP` with `SET_GROUP_...` / `POPULATE_GROUP`
-  calls in the `WHEN-LIST-CHANGED` trigger instead.
+  If it fails: create one Record Group per department, or keep a single Record Group
+  without the bind and use `POPULATE_GROUP_WITH_QUERY` in the `WHEN-LIST-CHANGED`
+  trigger, building the query text with the selected value.
 
 ## 2. `:SYSTEM.TRIGGER_NODE` and the value column
 
@@ -37,7 +39,7 @@ Tick a box only after seeing the behaviour in Forms Builder or at runtime.
 
 - [ ] Unverified: the names used in the fallback exist exactly as written —
       `FTREE.GET_TREE_NODE_PARENT`, `FTREE.NODE_LABEL`, `FTREE.NODE_VALUE`,
-      `FTREE.ID_NULL`, and the `NODE` / `ITEM` declarations.
+      `FTREE.ID_NULL`, and the `FTREE.NODE` / `ITEM` declarations.
 - [ ] Unverified: the fallback loop terminates at the root (the root's parent is
       reported as ID_NULL, not as an empty node).
 
@@ -58,17 +60,16 @@ Tick a box only after seeing the behaviour in Forms Builder or at runtime.
 
 ## 5. `FTREE.SELECTED_NODE`
 
-- [ ] Unverified: `FTREE.SELECTED_NODE` — the function the interviewer's earlier
-      sample used — exists and returns the selected node.
-      **I could not confirm it, so I do not use it.** My code uses
-      `:SYSTEM.TRIGGER_NODE` instead.
+- [ ] Unverified: `FTREE.SELECTED_NODE` exists and returns the selected node.
+      **I did not find it in the documentation, so I use `:SYSTEM.TRIGGER_NODE`,
+      which is the system variable I did find.** Both are worth trying.
 
-  How to check: try to compile a small trigger that calls it. If it compiles, both
-  approaches can be compared; if it does not, the sample was pseudo-code.
+  How to check: try to compile a small trigger that calls it. If it compiles, the two
+  approaches can be compared directly.
 
 ## Also unverified, outside Forms
 
 - [ ] The SQL scripts run on Oracle 19c without errors (they were not executed).
-- [ ] `sql/03_tree_query.sql` returns 6 rows and the expected path strings.
+- [ ] `sql/03_tree_query.sql` returns 7 rows and the expected path strings.
 - [ ] The two forms run in the browser in my environment.
 - [ ] The environment notes in `docs/ENVIRONMENT.md` are correct.

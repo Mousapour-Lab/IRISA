@@ -1,8 +1,31 @@
 # Oracle Forms take-home task
 
-This repository is a take-home task I received after a job interview. It is a small
-learning project: two Oracle Forms screens, the SQL behind them, and the notes I made
-while building them.
+This repository is a take-home task I received after a job interview.
+
+## Persian companion web app
+
+A small Next.js companion is available in the same repository. Its Persian-language
+installation guide is intentionally conservative, and both form previews are browser
+simulations using sample data; they do not connect to Oracle and are not evidence that
+the Forms modules work.
+
+Run it locally with a current Node.js release supported by the installed Next.js version:
+
+```sh
+npm install
+npm run dev
+```
+
+Open the local URL printed by Next.js. The personal checklist and environment notes are
+stored only in that browser's local storage. No Oracle credentials, connection strings,
+or profile details are requested or transmitted by this app.
+
+The guide does not claim that a VPN bypasses Oracle's terms, licensing, account checks,
+or download restrictions. Use accurate account information and consult the official
+installation and certification documentation for the exact product releases in use.
+
+It is a small learning project: two Oracle Forms screens, the SQL behind them, and the
+notes I made while building them.
 
 The forms are built by hand in Oracle Forms Builder. This repository holds the SQL,
 the step-by-step build instructions and the trigger code, not a compiled module.
@@ -25,6 +48,9 @@ the step-by-step build instructions and the trigger code, not a compiled module.
 .
 ├── README.md
 ├── .gitignore
+├── package.json              -- Next.js companion app
+├── src/app/                  -- Persian interface and simulator
+├── public/                   -- read-only copies of source files for in-app links
 ├── sql/
 │   ├── 01_schema.sql        -- three tables
 │   ├── 02_seed.sql          -- sample data used by both forms
@@ -84,16 +110,21 @@ To start over, run `sql/99_drop.sql` first, then the three scripts again.
 - `EMP_BLK` is a control block (non-database), so nothing is saved to a table.
 - `DEPT_LIST` is a List Item with three static elements: `Procurement = 1`,
   `Warehouse = 2`, `IT = 3`.
-- `EMP_NAME` and `EMP_ID` are text items with the same LOV, `LOV_EMP`.
+- `EMP_NAME` is the text item that has the LOV `LOV_EMP`; `EMP_ID` is filled from the
+  LOV column mapping, not by its own LOV.
 - The Record Group `RG_EMP` reads `employees` and filters on the selected
   department through a bind to the item:
 
 ```sql
 SELECT emp_name, emp_id
 FROM   employees
-WHERE  dept_id = TO_NUMBER(:EMP_BLK.DEPT_LIST)
-ORDER  BY emp_name;
+WHERE  dept_id = :EMP_BLK.DEPT_LIST
+ORDER  BY emp_name
 ```
+
+`DEPT_LIST` is a Number item, so no `TO_NUMBER` is needed. The List Item must have
+`Automatic Refresh` (or the equivalent "refresh the LOV each time it opens" property)
+turned on, otherwise the LOV may keep rows from the previous department.
 
 - A `WHEN-LIST-CHANGED` trigger on `DEPT_LIST` clears the two employee items,
   moves the cursor to `EMP_NAME` and opens the LOV again. Because the Record Group
@@ -104,9 +135,9 @@ Full build steps: `forms/task1_list_and_dynamic_lov/BUILD_STEPS.md`.
 
 ## How form 2 works (tree + path)
 
-- `NAV` is a control block. `TREE_ORG` is a Hierarchical Tree item whose Data Query
-  is the 5-column query from `sql/03_tree_query.sql`:
-  node state, depth, label, icon, value.
+- `NAV` is a control block. `TREE_ORG` is a Hierarchical Tree item. Its Data Query
+  (the query text property in the Data group) is the 5-column query from
+  `sql/03_tree_query.sql`: node state, depth, label, icon, value.
 - The fifth column (value) contains the full path of the node, built with
   `SYS_CONNECT_BY_PATH`, so the tree can simply display it.
 - `WHEN-NEW-FORM-INSTANCE` populates the tree with `FTREE.POPULATE_TREE`.
@@ -121,7 +152,7 @@ Everything below is **not done yet**. I tick the boxes myself after building and
 testing the forms. Nothing in this repository has been run or verified so far.
 
 - [ ] `sql/01_schema.sql` and `sql/02_seed.sql` run without errors on Oracle 19c
-- [ ] `sql/03_tree_query.sql` returns 6 rows with the expected paths
+- [ ] `sql/03_tree_query.sql` returns 7 rows with the expected paths
 - [ ] Task 1 form compiles in Forms Builder
 - [ ] Task 1: changing the department changes the LOV rows
 - [ ] Task 2 form compiles in Forms Builder

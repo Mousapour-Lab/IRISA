@@ -9,7 +9,7 @@ Legend: **expected** = what the form should do according to the build steps.
 
 - [ ] The database scripts ran in the order `01_schema.sql`, `02_seed.sql` without errors.
 - [ ] `SELECT COUNT(*) FROM departments;` returns 3, `employees` returns 6,
-      `org_hierarchy` returns 6.
+      `org_hierarchy` returns 7.
 - [ ] Forms Builder opens and compiles `form_task1.fmb` and `form_task2.fmb`.
 - [ ] The form runs (browser runtime) and the DB connection works with `<db_user>`.
 - [ ] No password, wallet or connection string is stored in the repository.
@@ -33,17 +33,18 @@ Legend: **expected** = what the form should do according to the build steps.
 
 ## Task 2 — Hierarchical Tree and path
 
-- [ ] Before building: `sql/03_tree_query.sql` returns 6 rows and 5 columns in SQL*Plus.
-- [ ] The tree shows 3 levels: CEO, then two deputies, then three managers.
+- [ ] Before building: `sql/03_tree_query.sql` returns 7 rows and 5 columns in SQL*Plus.
+- [ ] The tree shows 3 levels: CEO, then three deputies, then three managers.
 - [ ] The tree is populated when the form opens (not only after a refresh).
 - [ ] The root `CEO` starts expanded or can be expanded with a double click.
 - [ ] Clicking `CEO` (level 1) shows `CEO`.
 - [ ] Clicking `Procurement Deputy` (level 2) shows `CEO -> Procurement Deputy`.
 - [ ] Clicking `Procurement Manager` (level 3) shows
       `CEO -> Procurement Deputy -> Procurement Manager`.
-- [ ] Clicking `Warehouse Manager` (level 3, sibling of the previous node) shows
-      `CEO -> Procurement Deputy -> Warehouse Manager`. This is the sibling test: the
-      path must not be the same as for the previous node.
+- [ ] Clicking `Operations Deputy` (level 2) shows `CEO -> Operations Deputy`.
+- [ ] Clicking `Warehouse Manager` (level 3) shows
+      `CEO -> Operations Deputy -> Warehouse Manager`. This is the sibling test: same
+      depth as the previous node, different parent, so the path must differ.
 - [ ] Clicking `Finance Deputy` (level 2) shows `CEO -> Finance Deputy`.
 - [ ] Clicking `Accounting Manager` (level 3) shows `CEO -> Finance Deputy -> Accounting Manager`.
 - [ ] Selecting a node twice in a row keeps the text correct (no duplicated path).

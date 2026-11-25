@@ -1,9 +1,8 @@
 # Environment
 
-Template for the installation notes. **Everything marked `TODO(owner)` has to be
-filled in from the machine that actually runs the forms.** I deliberately did not
-write version numbers or install steps from memory, because I have not done the
-installation yet in a way I could verify.
+Template for the installation notes. Everything marked `TODO(owner)` has to be
+filled in from the machine that runs the forms. I left the version numbers out
+because I have not finished the installation yet.
 
 ## Versions
 
@@ -43,7 +42,7 @@ into this repository; they are ignored by `.gitignore` and should stay local.
 
 `TODO(owner)` — one entry per real problem, for example: the form opens but the
 tree is empty; the browser shows an error page; the LOV returns no rows. Write what
-the message said and what fixed it. Keep it short; this is evidence, not a tutorial.
+the message said and what fixed it. Keep it short.
 
 | # | Symptom | Cause | Fix |
 | --- | --- | --- | --- |

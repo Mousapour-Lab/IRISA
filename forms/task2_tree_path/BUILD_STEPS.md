@@ -25,7 +25,7 @@ Prerequisite: the tables exist and are seeded (`sql/01_schema.sql`,
 ## Step 0 — test the query outside Forms
 
 Before building anything: open `sql/03_tree_query.sql`, run it in SQL*Plus or
-SQL Developer and check that it returns 6 rows in 5 columns, with the path in the
+SQL Developer and check that it returns 7 rows in 5 columns, with the path in the
 last column. If this step fails, the tree will be empty and Forms will not explain
 why. Fix the query in SQL first.
 
@@ -48,10 +48,12 @@ why. Fix the query in SQL first.
    - `Name = TREE_ORG`
    - `Item Type = Hierarchical Tree`
    - `Canvas = CANVAS_TREE`
-   - `Width` / `Height` large enough for 6 nodes (for example 300 x 200)
+   - `Width` / `Height` large enough for 7 nodes (for example 300 x 200)
    - `Database Item = No`
 
-   Open the `Data` property group and set `Data Query` to the 5-column query from
+   Open the property group that holds the tree query. My notes say `Data Query`; in
+   the Property Palette it may be called `Data Source Data Type` plus `Query Text`.
+   Use whatever name you actually see there, and set it to the 5-column query from
    `sql/03_tree_query.sql` (the whole `SELECT ... ORDER SIBLINGS BY org_name`,
    without the trailing semicolon is safest; paste it and compile):
 
@@ -124,22 +126,25 @@ For the seed data the tree looks like this (siblings sorted by name):
 CEO
 ├── Finance Deputy
 │   └── Accounting Manager
+├── Operations Deputy
+│   └── Warehouse Manager
 └── Procurement Deputy
-    ├── Procurement Manager
-    └── Warehouse Manager
+    └── Procurement Manager
 ```
 
 | Clicked node | Level | Text in `PATH_TXT` |
 | --- | --- | --- |
 | CEO | 1 | `CEO` |
-| Procurement Deputy | 2 | `CEO -> Procurement Deputy` |
-| Procurement Manager | 3 | `CEO -> Procurement Deputy -> Procurement Manager` |
-| Warehouse Manager | 3 | `CEO -> Procurement Deputy -> Warehouse Manager` |
 | Finance Deputy | 2 | `CEO -> Finance Deputy` |
 | Accounting Manager | 3 | `CEO -> Finance Deputy -> Accounting Manager` |
+| Operations Deputy | 2 | `CEO -> Operations Deputy` |
+| Warehouse Manager | 3 | `CEO -> Operations Deputy -> Warehouse Manager` |
+| Procurement Deputy | 2 | `CEO -> Procurement Deputy` |
+| Procurement Manager | 3 | `CEO -> Procurement Deputy -> Procurement Manager` |
 
-The sibling check (Procurement Manager vs Warehouse Manager) is the one that proves
-the value belongs to the node and is not just the last row of the tree.
+The sibling check (Warehouse Manager vs Procurement Manager) is the one that proves
+the value belongs to the node and is not just the last row of the tree: same depth,
+different parent.
 
 ## Not verified
 
