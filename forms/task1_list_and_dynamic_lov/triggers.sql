@@ -46,9 +46,8 @@ LIST_VALUES;   -- optional extra: opens the LOV automatically
 --
 -- SELECT emp_name, emp_id
 -- FROM   employees
--- WHERE  dept_id = TO_NUMBER(:EMP_BLK.DEPT_LIST)
+-- WHERE  dept_id = :EMP_BLK.DEPT_LIST
 -- ORDER  BY emp_name
 --
--- TO_NUMBER is used because the List Item stores its values as numbers (1, 2, 3)
--- while dept_id is a NUMBER: the conversion makes the intent explicit and keeps
--- the comparison away from implicit character conversion.
+-- No TO_NUMBER: the List Item is defined as a Number item and dept_id is a NUMBER
+-- column, so the values already match.

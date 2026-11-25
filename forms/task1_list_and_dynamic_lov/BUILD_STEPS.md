@@ -61,8 +61,8 @@ Prerequisite: the tables exist and are seeded (`sql/01_schema.sql`,
    | Warehouse | 2 |
    | IT | 3 |
 
-   While you are in the Property Palette, set `Mapping of Other Values = 0` and leave
-   `Required = No`, so an empty selection cannot raise an error.
+   Leave `Mapping of Other Values` empty (do not put `0` there: 0 is not one of the
+   list values) and set `Required = No`, so an empty selection cannot raise an error.
 
 5. **Create the two employee text items.**
    Two more items in the same block, both `Item Type = Text Item`,
@@ -83,15 +83,19 @@ Prerequisite: the tables exist and are seeded (`sql/01_schema.sql`,
    ```sql
    SELECT emp_name, emp_id
    FROM   employees
-   WHERE  dept_id = TO_NUMBER(:EMP_BLK.DEPT_LIST)
+   WHERE  dept_id = :EMP_BLK.DEPT_LIST
    ORDER  BY emp_name
    ```
+
+   `DEPT_LIST` is a Number item and `dept_id` is a NUMBER column, so the comparison
+   needs no conversion.
 
    The Record Group takes its column names from the select list, so the display
    items can be created automatically from `EMP_NAME` and `EMP_ID`. Every row
    returns exactly two values, one per column.
    The bind `:EMP_BLK.DEPT_LIST` is the part I must confirm in Forms — see
-   `docs/VERIFY.md`, point 1.
+   `docs/VERIFY.md`, point 1. If it is not accepted, the fallback is to build the
+   query text in the trigger and run `POPULATE_GROUP_WITH_QUERY`.
 
 7. **Create the LOV `LOV_EMP`.**
    Select `LOVs` and click **Create**.
@@ -102,6 +106,9 @@ Prerequisite: the tables exist and are seeded (`sql/01_schema.sql`,
      to the item `EMP_BLK.EMP_NAME`, and the second column `EMP_ID` to
      `EMP_BLK.EMP_ID`.
    - Return item: `EMP_BLK.EMP_NAME`.
+   - Turn on `Automatic Refresh` (the property that makes the LOV re-run its query
+     every time it opens). Without it the LOV may keep showing rows from the
+     previously selected department.
    - Optional cosmetics: width/height of the LOV window, column titles.
 
 8. **Assign the LOV to the item.**
@@ -122,7 +129,8 @@ Prerequisite: the tables exist and are seeded (`sql/01_schema.sql`,
     in this folder.
 
 11. **Compile.**
-    `Program > Compile Incremental` (or `Ctrl + Shift + K`). Fix any error shown in
+    `Program > Compile Incremental` from the menu (the keyboard shortcut is whatever
+    your Builder shows; I have not confirmed it). Fix any error shown in
     the compile window before continuing. Common causes: a missing canvas, a typo in
     an item name, a trigger on the wrong node.
 
