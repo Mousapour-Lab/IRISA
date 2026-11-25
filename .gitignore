@@ -1,0 +1,50 @@
+# ---------------------------------------------------------------------------
+# Oracle Forms / Reports build output
+# ---------------------------------------------------------------------------
+*.fmx
+*.mmx
+*.plx
+*.rep
+*.rex
+*.log
+
+# NOTE: *.fmb is intentionally NOT ignored.
+# The Forms source files (module.fmb) belong in the repository; only the
+# compiled output above is excluded.
+
+# ---------------------------------------------------------------------------
+# Secrets, credentials and connection data
+# ---------------------------------------------------------------------------
+.env
+.env.*
+*.env
+*.p12
+*.sso
+*.jks
+*.key
+*.pem
+cwallet.sso
+ewallet.p12
+tnsnames.ora
+sqlnet.ora
+ldap.ora
+wallets/
+credentials*
+
+# ---------------------------------------------------------------------------
+# OS files
+# ---------------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---------------------------------------------------------------------------
+# Editors and temporary files
+# ---------------------------------------------------------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.bak
+*.tmp
