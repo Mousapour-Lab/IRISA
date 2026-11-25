@@ -26,10 +26,9 @@ FTREE.POPULATE_TREE('NAV.TREE_ORG');
 -- Reads the tree's value column (the 5th column of the Data Query, which holds the
 -- full path) for the node the user selected and writes it into PATH_TXT.
 --
--- :SYSTEM.TRIGGER_NODE is used instead of FTREE.SELECTED_NODE: an earlier sample
--- from the interviewer used FTREE.SELECTED_NODE, but I could not confirm that it
--- exists as a public function. :SYSTEM.TRIGGER_NODE is the documented system
--- variable for the node that fired this trigger. VERIFY (docs/VERIFY.md, point 2).
+-- I use :SYSTEM.TRIGGER_NODE because I found it in the Forms documentation, and I
+-- did not find FTREE.SELECTED_NODE there. Both are worth trying if this returns
+-- NULL. VERIFY (docs/VERIFY.md, point 2).
 
 DECLARE
   htree ITEM;
@@ -50,18 +49,17 @@ END;
 -- label of each ancestor.
 --
 -- This version depends on three things I have not confirmed:
---   * FTREE.GET_TREE_NODE_PARENT(htree, node) returning a NODE
+--   * FTREE.GET_TREE_NODE_PARENT(htree, node) returning a node
 --   * FTREE.NODE_LABEL as the property constant for the label text
 --   * FTREE.ID_NULL(node) as the test for "no more parent" (the root's parent)
--- If IF FTREE.ID_NULL(...) misbehaves, replace the WHILE condition with
---   WHILE v_node IS NOT NULL
--- and check whether the root's parent comes back as NULL or as an empty node.
+-- A NODE is a special type, so do not test it with "IS NOT NULL"; keep the
+-- FTREE.ID_NULL(...) condition for the loop.
 -- VERIFY (docs/VERIFY.md, points 3 and 4).
 
 /*
 DECLARE
   htree  ITEM;
-  v_node NODE;
+  v_node FTREE.NODE;
   v_path VARCHAR2(4000);
 BEGIN
   htree := FIND_ITEM('NAV.TREE_ORG');
@@ -71,12 +69,8 @@ BEGIN
     v_path := NULL;
 
     WHILE NOT FTREE.ID_NULL(v_node) LOOP
-      IF v_path IS NULL THEN
-        v_path := FTREE.GET_TREE_NODE_PROPERTY(htree, v_node, FTREE.NODE_LABEL);
-      ELSE
-        v_path := FTREE.GET_TREE_NODE_PROPERTY(htree, v_node, FTREE.NODE_LABEL)
-                  || ' -> ' || v_path;
-      END IF;
+      v_path := FTREE.GET_TREE_NODE_PROPERTY(htree, v_node, FTREE.NODE_LABEL)
+                || CASE WHEN v_path IS NULL THEN NULL ELSE ' -> ' || v_path END;
       v_node := FTREE.GET_TREE_NODE_PARENT(htree, v_node);
     END LOOP;
 
