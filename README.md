@@ -1,8 +1,31 @@
 # Oracle Forms take-home task
 
-This repository is a take-home task I received after a job interview. It is a small
-learning project: two Oracle Forms screens, the SQL behind them, and the notes I made
-while building them.
+This repository is a take-home task I received after a job interview.
+
+## Persian companion web app
+
+A small Next.js companion is available in the same repository. Its Persian-language
+installation guide is intentionally conservative, and both form previews are browser
+simulations using sample data; they do not connect to Oracle and are not evidence that
+the Forms modules work.
+
+Run it locally with a current Node.js release supported by the installed Next.js version:
+
+```sh
+npm install
+npm run dev
+```
+
+Open the local URL printed by Next.js. The personal checklist and environment notes are
+stored only in that browser's local storage. No Oracle credentials, connection strings,
+or profile details are requested or transmitted by this app.
+
+The guide does not claim that a VPN bypasses Oracle's terms, licensing, account checks,
+or download restrictions. Use accurate account information and consult the official
+installation and certification documentation for the exact product releases in use.
+
+It is a small learning project: two Oracle Forms screens, the SQL behind them, and the
+notes I made while building them.
 
 The forms are built by hand in Oracle Forms Builder. This repository holds the SQL,
 the step-by-step build instructions and the trigger code, not a compiled module.
@@ -25,6 +48,9 @@ the step-by-step build instructions and the trigger code, not a compiled module.
 .
 ├── README.md
 ├── .gitignore
+├── package.json              -- Next.js companion app
+├── src/app/                  -- Persian interface and simulator
+├── public/                   -- read-only copies of source files for in-app links
 ├── sql/
 │   ├── 01_schema.sql        -- three tables
 │   ├── 02_seed.sql          -- sample data used by both forms
