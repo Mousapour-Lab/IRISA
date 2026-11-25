@@ -12,10 +12,10 @@
 -- If the query fails or returns the wrong shape, the tree will stay empty and
 -- Forms will not tell you much about the reason.
 --
--- Expected: 6 rows, for example
+-- Expected: 7 rows, for example
 --   level 1 : CEO
---   level 2 : CEO -> Procurement Deputy
---   level 3 : CEO -> Procurement Deputy -> Procurement Manager
+--   level 2 : CEO -> Finance Deputy
+--   level 3 : CEO -> Finance Deputy -> Accounting Manager
 
 SELECT CASE WHEN CONNECT_BY_ISLEAF = 1 THEN 0 WHEN LEVEL = 1 THEN 1 ELSE -1 END,
        LEVEL,
